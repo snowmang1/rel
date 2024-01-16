@@ -5,9 +5,6 @@ module Lib (
   Op (Pattern, Kleene, Union)
 ) where
 
-someFunc :: IO ()
-someFunc = putStrLn "Hello world"
-
 -- TODO: parser for outer words and operators
 
 import Text.Parsec (Parsec, between, many1, many, (<|>), modifyState)
@@ -23,6 +20,9 @@ data Op = Union | Kleene | Pattern deriving (Show, Eq)
 data Token = Token Op Term deriving (Show, Eq)
 
 type RELParser = Parsec String [String] [Token]
+
+someFunc :: IO ()
+someFunc = putStrLn "Hello world"
 
 -- | parses the body of reg ex
 termParse :: Parsec String [String] Token
