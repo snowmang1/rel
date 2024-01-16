@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - tasty >= 1.4
 - tasty-hunit >= 0.10
+- parsec >=3.1.16
 
 ghc-options:
 - -Wall

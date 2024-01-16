@@ -60,4 +60,3 @@ exprParser = between beginTerm endTerm (many1 termParse)
   endTerm = do
     x <- char ']'
     return $ []
-
