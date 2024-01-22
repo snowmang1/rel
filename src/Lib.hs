@@ -1,63 +1,33 @@
-module Lib (
-  someFunc,
-  exprParser,
-  Token (..),
-  Op (Pattern, Kleene, Union)
-) where
+module Lib (relParser) where
 
--- TODO: parser for outer words and operators
+import Text.Parsec (Parsec, manyTill, many, between, eof, (<|>))
+import Text.Parsec.Char (char)
+import RegexParser
 
-import Text.Parsec (Parsec, between, many1, many, (<|>), modifyState)
-import Text.Parsec.Char (letter, char)
+-- TODO: create parser lib for complete REL grammar
+-- - exprParser needs to be integrated with the CFG
+-- - Op<Regex>
 
--- | Term can be a [ regex ] block or just an English character string
-type Term = String
-
--- | Union => +, Kleene => * both refering to the regular expression theory
-data Op = Union | Kleene | Pattern deriving (Show, Eq)
-
--- | Token is built to house all match strings and bind operator info to terms
-data Token = Token Op Term deriving (Show, Eq)
-
-type RELParser = Parsec String [String] [Token]
-
-someFunc :: IO ()
-someFunc = putStrLn "Hello world"
-
--- | parses the body of reg ex
-termParse :: Parsec String [String] Token
-termParse =
-  unionParser <|> kleeneParser <|> noOpParser
+-- | parses out the operator term *o* in the term *o[r][r]*
+opParser :: Parsec String [String] Token
+opParser = genParse <|> repParse
   where
-  unionParser :: Parsec String [String] Token
-  unionParser = do
-    o <- char '+'
-    c <- letter
-    modifyState ([o,c] :)
-    return $ Token Union [c]
-  kleeneParser :: Parsec String [String] Token
-  kleeneParser = do
-    o <- char '*'
-    c <- letter
-    modifyState ([o,c] :)
-    return $ Token Kleene [c]
-  noOpParser :: Parsec String [String] Token
-  noOpParser = do
-    c <- many1 letter
-    modifyState (c :)
-    return $ Token Pattern c
+  genParse :: Parsec String [String] Token
+  genParse = do
+    x <- char 'g'
+    return $ Token Outg [x]
+  repParse :: Parsec String [String] Token
+  repParse = do
+    x <- char 'r'
+    return $ Token Outr [x]
 
--- | The 'A' referse to my cfg where A is a subset of a proper regex term
--- e.g: '*[ABC]', '[A*BC]', '*[B+CA]'
-exprParser :: RELParser
-exprParser = between beginTerm endTerm (many1 termParse)
+-- | The parser representing the REL language
+relParser :: Parsec String [String] [[Token]]
+relParser = manyTill f eof
   where
-  beginTerm :: RELParser
-  beginTerm = do
-    x <- char '['
-    return $ []
-  endTerm :: RELParser
-  endTerm = do
-    x <- char ']'
-    return $ []
-
+  f :: Parsec String [String] [Token]
+  f = do 
+    op <- opParser
+    r1 <- exprParser
+    r2 <- exprParser
+    return $ op : (r1 ++ (Token Sep "" : r2))

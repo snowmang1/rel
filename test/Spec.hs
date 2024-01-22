@@ -3,6 +3,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import Lib
+import RegexParser
 import Text.Parsec
 
 main :: IO()
@@ -11,6 +12,9 @@ main = defaultMain unittests
 -- | for individual parser modules only
 test :: Parsec String [String] [Token] -> (String -> Either ParseError [Token])
 test p = runParser p [] ""
+
+bigtest :: Parsec String [String] [[Token]] -> (String -> Either ParseError [[Token]])
+bigtest p = runParser p [] ""
 
 unittests :: TestTree
 unittests = testGroup "UnitTests"
@@ -36,5 +40,17 @@ unittests = testGroup "UnitTests"
       test exprParser "[+H+S]" @?= Right [Token Union "H", Token Union "S"],
       testCase "Tokenize multiple kleene" $
       test exprParser "[*H*S+A*B]" @?= Right [Token Kleene "H", Token Kleene "S",
-        Token Union "A", Token Kleene "B"]
+        Token Union "A", Token Kleene "B"],
+      testCase "Tokenize one op[r][r] term" $
+      bigtest relParser "g[H][B]" @?= Right [[Token Outg "g", Token Pattern "H",
+        Token Sep "", Token Pattern "B"]],
+      testCase "Tokenize one full term" $
+      bigtest relParser "g[+H*BAMPM][BY+U]" @?= Right [[Token Outg "g",
+        Token Union "H", Token Kleene "B", Token Pattern "AMPM",
+        Token Sep "", Token Pattern "BY", Token Union "U"]],
+      testCase "Tokenize two full terms" $
+      bigtest relParser "g[H][B]r[A][C]" @?= Right [[Token Outg "g",
+        Token Pattern "H", Token Sep "", Token Pattern "B"]
+        [Token Outr "r", Token Pattern "A", Token Sep "",
+        Token Pattern "C"]]
     ]
