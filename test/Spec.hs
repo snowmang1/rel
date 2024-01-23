@@ -50,7 +50,7 @@ unittests = testGroup "UnitTests"
         Token Sep "", Token Pattern "BY", Token Union "U"]],
       testCase "Tokenize two full terms" $
       bigtest relParser "g[H][B]r[A][C]" @?= Right [[Token Outg "g",
-        Token Pattern "H", Token Sep "", Token Pattern "B"]
+        Token Pattern "H", Token Sep "", Token Pattern "B"],
         [Token Outr "r", Token Pattern "A", Token Sep "",
         Token Pattern "C"]]
     ]
