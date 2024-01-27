@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Phase2
       RegexParser
   other-modules:
       Paths_rel
@@ -35,7 +36,7 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      base >=4.8 && <5
     , parsec >=3.1.16
     , tasty >=1.4
     , tasty-hunit >=0.10
@@ -51,7 +52,7 @@ executable rel-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      base >=4.8 && <5
     , parsec >=3.1.16
     , rel
     , tasty >=1.4
@@ -62,6 +63,8 @@ test-suite rel-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Middleware
+      Parser
       Paths_rel
   autogen-modules:
       Paths_rel
@@ -69,7 +72,7 @@ test-suite rel-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      base >=4.8 && <5
     , parsec >=3.1.16
     , rel
     , tasty >=1.4
