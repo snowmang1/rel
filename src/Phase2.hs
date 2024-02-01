@@ -1,21 +1,8 @@
 module Phase2 (
-  OpStruct (..),
-  RelIR (..),
   pars2IR
 ) where
 
-import RegexParser
-
--- TODO: phase 2 middleware
--- - translate Token list into readable structure list
-
--- | This creates a structure where each outside operation is a single object
-data OpStruct = Generate [Token] [Token]
-  | Replace [Token] [Token] deriving (Show, Eq)
-
--- | middleware hands this off to the backend for interp
--- effectivly making this is our IR
-type RelIR = [OpStruct]
+import Structures
 
 -- | read-in the [[Token]] from relParser and interpret it to be an instance of IR
 -- where each operation unit is a single structure

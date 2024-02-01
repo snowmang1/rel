@@ -4,7 +4,7 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import Phase2
-import RegexParser
+import Structures
 
 middle :: TestTree
 middle = testGroup "Middleware Tests"

@@ -1,27 +1,12 @@
 module RegexParser (
   exprParser,
-  Term,
-  Op (..),
-  Token (..),
-  RELParser,
   relParser
-)
-where
+) where
 
 import Text.Parsec (manyTill, eof, Parsec, between, many1, (<|>), modifyState)
 import Text.Parsec.Char (letter, char)
 
--- | Term can be a [ regex ] block or just an English character string
-type Term = String
-
--- | Union => +, Kleene => * both refering to the regular expression theory
-data Op = Union | Kleene | Or | Outg | Outr | Pattern | Sep deriving (Show, Eq)
-
--- | Token is built to house all match strings and bind operator info to terms
-data Token = Token Op Term deriving (Show, Eq)
-
--- | convience type for common parser in REL
-type RELParser = Parsec String [String] [Token]
+import Structures
 
 -- | parses out the operator term *o* in the term *o[r][r]*
 opParser :: Parsec String [String] Token

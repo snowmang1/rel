@@ -6,6 +6,8 @@ import Test.Tasty.HUnit
 import RegexParser
 import Text.Parsec
 
+import Structures
+
 -- | for individual parser modules only
 test :: Parsec String [String] [Token] -> (String -> Either ParseError [Token])
 test p = runParser p [] ""

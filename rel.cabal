@@ -28,6 +28,7 @@ library
       Lib
       Phase2
       RegexParser
+      Structures
   other-modules:
       Paths_rel
   autogen-modules:
@@ -63,6 +64,7 @@ test-suite rel-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Backend
       Middleware
       Parser
       Paths_rel
