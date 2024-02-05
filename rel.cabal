@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      Interp
       Lib
       Phase2
       RegexParser
@@ -38,6 +39,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.8 && <5
+    , directory >=1.3
     , parsec >=3.1.16
     , tasty >=1.4
     , tasty-hunit >=0.10
@@ -54,6 +56,7 @@ executable rel-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.8 && <5
+    , directory >=1.3
     , parsec >=3.1.16
     , rel
     , tasty >=1.4
@@ -75,6 +78,7 @@ test-suite rel-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.8 && <5
+    , directory >=1.3
     , parsec >=3.1.16
     , rel
     , tasty >=1.4

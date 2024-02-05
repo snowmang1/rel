@@ -1,6 +1,6 @@
 module Structures (
   OpStruct (..),
-  RelIR (..),
+  RelIR,
   Term,
   Op (..),
   Token (..),

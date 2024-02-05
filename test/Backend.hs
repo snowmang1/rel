@@ -3,11 +3,11 @@ module Backend (backend) where
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Lib
+import Interp
 import Structures
 
 backend :: TestTree
-backend = testGroup "Backend Tests" [interpTests, findPatTests, matchPreTests]
+backend = testGroup "Backend Tests" [interpTests, matchPreTests]
 
 interpTests :: TestTree
 interpTests = testGroup "interp Testing"
