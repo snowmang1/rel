@@ -46,52 +46,29 @@ matchPre p fs = matchPre' p fs 0 where
     []  -> Just end
     _   ->
       case head p' of
-      Token Union s   -> case [h]==s of
+      BToken Or (t1,t2)-> case [h]==t1 || [h]==t2 of
+        True  -> matchPre' (tail p') fs' (end+1)
+        False -> Nothing
+      UToken Union s   -> case [h]==s of
         True  -> let (fs'', end') = eatPat s fs' in matchPre' (tail p') fs'' (end+end')
         False -> Nothing
-      Token Kleene s  -> case [h]==s of
+      UToken Kleene s  -> case [h]==s of
         True  -> let (fs'', end') = eatPat s fs' in matchPre' (tail p') fs'' (end+end')
         False -> matchPre' (tail p') fs' (end+1)
-      Token Pattern s -> case matchPat s (h:fs') of
+      UToken Pattern s -> case matchPat s (h:fs') of
         Just fs'' -> matchPre' (tail p') fs'' (end+(length s))
         Nothing   -> Nothing
       _ -> undefined
-
--- WARN: This fucntion is not functioning and is kept here as a reminder to draw pictures first
--- | function to find index of some pattern [Token]
-findPat :: [Token] -> String -> Maybe (Int, Int)
-findPat p fs = findPat' [] p fs (0,0)
-  where
-  findPat' :: [Token] -> [Token] -> String -> (Int, Int) -> Maybe (Int, Int)
-  findPat' _ _ [] (start, end) = if start==end then Nothing else Just (start, end)
-  findPat' mp (Token Union s:pt) (h:fs') (start, _) =
-    if [h]==s then
-      let (fs'',end') = eatPat s fs' in
-      findPat' (Token Union s:mp) pt fs'' (start, start+end')
-    else
-      findPat' [] ((reverse mp)++(Token Union s:pt)) fs' (start+1,start+1)
-  findPat' mp (Token Kleene s:pt) (h:fs') (start, end) = 
-    if [h]==s then
-      let (fs'',end') = eatPat s fs' in
-      findPat' (Token Kleene s:mp) pt fs'' (start, end+end')
-    else
-      case start==end of
-      True  -> findPat' (Token Kleene s:mp) pt fs' (start, end+1) --prefix non-disruptive
-      False -> findPat' [] ((reverse mp)++(Token Kleene s:pt)) fs' (start+1, start+1) -- disreuptive
-  findPat' mp (Token Pattern s:pt) fs' (start, end) =
-    case matchPat s fs' of
-    Nothing -> findPat' [] ((reverse mp)++(Token Pattern s:pt)) (tail fs') (start+1, start+1)
-    Just fs'' -> findPat' (Token Pattern s:mp) pt fs'' (start, end+(length s))
-  findPat' _ _ _ _ = undefined -- no Or for now, v1 /= Binary Ops
 
 -- | takes a list of tokens and creates an output string
 p2s :: [Token] -> String
 p2s p = p2s' p "" where
   p2s' p' a = case p' of
-    []                 -> a
-    Token Union s:pt   -> p2s' pt (a ++ s)
-    Token Kleene _:pt  -> p2s' pt (a ++ "")
-    Token Pattern s:pt -> p2s' pt (a ++ s)
+    []                  -> a
+    UToken Union s:pt   -> p2s' pt (a ++ s)
+    UToken Kleene _:pt  -> p2s' pt (a ++ "")
+    UToken Pattern s:pt -> p2s' pt (a ++ s)
+    BToken Or (t1,_):pt -> p2s' pt (a ++ t1)
     _ ->  p2s' (tail p') (a ++ "")
 
 -- | these will consume one OpStruct and preform the operation Generate on the given
@@ -113,3 +90,31 @@ repTerm find rep fs = repTerm' find rep fs "" where
     Just end  -> let (_, postf) = splitAt end fs' in
       repTerm' find' rep' postf (x ++ (p2s rep'))
     Nothing   -> x
+
+-- WARN: This fucntion is not functioning and is kept here as a reminder to draw pictures first
+-- | function to find index of some pattern [Token]
+findPat :: [Token] -> String -> Maybe (Int, Int)
+findPat p fs = findPat' [] p fs (0,0)
+  where
+  findPat' :: [Token] -> [Token] -> String -> (Int, Int) -> Maybe (Int, Int)
+  findPat' _ _ [] (start, end) = if start==end then Nothing else Just (start, end)
+  findPat' mp (UToken Union s:pt) (h:fs') (start, _) =
+    if [h]==s then
+      let (fs'',end') = eatPat s fs' in
+      findPat' (UToken Union s:mp) pt fs'' (start, start+end')
+    else
+      findPat' [] ((reverse mp)++(UToken Union s:pt)) fs' (start+1,start+1)
+  findPat' mp (UToken Kleene s:pt) (h:fs') (start, end) = 
+    if [h]==s then
+      let (fs'',end') = eatPat s fs' in
+      findPat' (UToken Kleene s:mp) pt fs'' (start, end+end')
+    else
+      case start==end of
+      True  -> findPat' (UToken Kleene s:mp) pt fs' (start, end+1) --prefix non-disruptive
+      False -> findPat' [] ((reverse mp)++(UToken Kleene s:pt)) fs' (start+1, start+1) -- disreuptive
+  findPat' mp (UToken Pattern s:pt) fs' (start, end) =
+    case matchPat s fs' of
+    Nothing -> findPat' [] ((reverse mp)++(UToken Pattern s:pt)) (tail fs') (start+1, start+1)
+    Just fs'' -> findPat' (UToken Pattern s:mp) pt fs'' (start, end+(length s))
+  findPat' _ _ _ _ = undefined -- no Or for now, v1 /= Binary Ops
+
