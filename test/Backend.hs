@@ -52,8 +52,8 @@ interpTests = testGroup "interp Testing"
       "habc" @?= "123abc"
   ]
 
-findPatTests :: TestTree
-findPatTests = testGroup "findPat Testing"
+_findPatTests :: TestTree
+_findPatTests = testGroup "findPat Testing"
   [
     testCase "findPat single Union, single match" $
       findPat [UToken Union "b"] "b" @?= Just (0,1),

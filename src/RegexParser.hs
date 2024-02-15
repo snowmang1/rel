@@ -1,12 +1,29 @@
 module RegexParser (
   exprParser,
-  relParser
+  relParser,
+  forceParse
 ) where
 
-import Text.Parsec (manyTill, eof, Parsec, between, many1, (<|>), modifyState)
+import Text.Parsec (runParser, manyTill, eof, Parsec, between, many1, (<|>), modifyState)
 import Text.Parsec.Char (digit, letter, char)
 
 import Structures
+
+forceParse :: String -> [[Token]]
+forceParse s = case runParser relParser [] "" s of
+  Right t -> t
+  Left  _ -> undefined
+
+-- | The parser representing the REL language
+relParser :: Parsec String [String] [[Token]]
+relParser = manyTill f eof
+  where
+  f :: Parsec String [String] [Token]
+  f = do 
+    op <- opParser
+    r1 <- exprParser
+    r2 <- exprParser
+    return $ op : (r1 ++ (UToken Sep "" : r2))
 
 -- | parses out the operator term *o* in the term *o[r][r]*
 opParser :: Parsec String [String] Token
@@ -20,17 +37,6 @@ opParser = genParse <|> repParse
   repParse = do
     x <- char 'r'
     return $ UToken Outr [x]
-
--- | The parser representing the REL language
-relParser :: Parsec String [String] [[Token]]
-relParser = manyTill f eof
-  where
-  f :: Parsec String [String] [Token]
-  f = do 
-    op <- opParser
-    r1 <- exprParser
-    r2 <- exprParser
-    return $ op : (r1 ++ (UToken Sep "" : r2))
 
 -- | parses the body of reg ex
 termParse :: Parsec String [String] Token

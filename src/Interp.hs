@@ -60,6 +60,8 @@ matchPre p fs = matchPre' p fs 0 where
         Nothing   -> Nothing
       _ -> undefined
 
+-- TODO: randomize output on operators with ambigous matching: Kleene, Union
+
 -- | takes a list of tokens and creates an output string
 p2s :: [Token] -> String
 p2s p = p2s' p "" where
@@ -92,6 +94,7 @@ repTerm find rep fs = repTerm' find rep fs "" where
     Nothing   -> x
 
 -- WARN: This fucntion is not functioning and is kept here as a reminder to draw pictures first
+
 -- | function to find index of some pattern [Token]
 findPat :: [Token] -> String -> Maybe (Int, Int)
 findPat p fs = findPat' [] p fs (0,0)
