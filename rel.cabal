@@ -41,6 +41,7 @@ library
       base >=4.8 && <5
     , directory >=1.3
     , parsec >=3.1.16
+    , random >=1.2
     , tasty >=1.4
     , tasty-hunit >=0.10
   default-language: Haskell2010
@@ -58,6 +59,7 @@ executable rel-exe
       base >=4.8 && <5
     , directory >=1.3
     , parsec >=3.1.16
+    , random >=1.2
     , rel
     , tasty >=1.4
     , tasty-hunit >=0.10
@@ -80,6 +82,7 @@ test-suite rel-test
       base >=4.8 && <5
     , directory >=1.3
     , parsec >=3.1.16
+    , random >=1.2
     , rel
     , tasty >=1.4
     , tasty-hunit >=0.10

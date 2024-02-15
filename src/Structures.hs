@@ -2,7 +2,8 @@ module Structures (
   OpStruct (..),
   RelIR,
   Term,
-  Op (..),
+  UOp (..),
+  BOp (..),
   Token (..),
   RELParser
 ) where
@@ -12,11 +13,14 @@ import Text.Parsec (Parsec)
 -- | Term can be a [ regex ] block or just an English character string
 type Term = String
 
--- | Union => +, Kleene => * both refering to the regular expression theory
-data Op = Union | Kleene | Or | Outg | Outr | Pattern | Sep deriving (Show, Eq)
+-- | Unary operators Union => +, Kleene => * both refering to the regular expression theory
+data UOp = Union | Kleene | Outg | Outr | Pattern | Sep deriving (Show, Eq)
+
+-- | Binary operators
+data BOp = Or deriving (Show, Eq)
 
 -- | Token is built to house all match strings and bind operator info to terms
-data Token = Token Op Term deriving (Show, Eq)
+data Token = UToken UOp Term | BToken BOp (Term, Term) deriving (Show, Eq)
 
 -- | convience type for common parser in REL
 type RELParser = Parsec String [String] [Token]
