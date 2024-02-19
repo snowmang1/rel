@@ -94,7 +94,6 @@ repTerm find rep fs = repTerm' find rep fs "" where
     Nothing   -> x
 
 -- WARN: This fucntion is not functioning and is kept here as a reminder to draw pictures first
-
 -- | function to find index of some pattern [Token]
 findPat :: [Token] -> String -> Maybe (Int, Int)
 findPat p fs = findPat' [] p fs (0,0)
