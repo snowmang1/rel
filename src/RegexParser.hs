@@ -4,6 +4,7 @@ module RegexParser (
   forceParse
 ) where
 
+import Prelude
 import Text.Parsec (runParser, manyTill, eof, Parsec, between, many1, (<|>), modifyState)
 import Text.Parsec.Char (digit, letter, char)
 

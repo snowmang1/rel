@@ -11,8 +11,8 @@ main :: IO ()
 main = getArgs >>= sortFiles where
 sortFiles :: [String] -> IO ()
 sortFiles s = do
-  f1 <- readFile (head s)
-  f2 <- readFile (s!!1)
+  f1 <- readFile (head s) -- read first file
+  f2 <- readFile (head s) -- read second file
   (logs (runInterp f1 f2))
 
 runInterp :: String -> String -> String

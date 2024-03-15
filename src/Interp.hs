@@ -1,6 +1,5 @@
 module Interp (
   interp,
-  findPat,
   matchPre,
   p2s
 ) where
@@ -92,31 +91,3 @@ repTerm find rep fs = repTerm' find rep fs "" where
     Just end  -> let (_, postf) = splitAt end fs' in
       repTerm' find' rep' postf (x ++ (p2s rep'))
     Nothing   -> x
-
--- WARN: This fucntion is not functioning and is kept here as a reminder to draw pictures first
--- | function to find index of some pattern [Token]
-findPat :: [Token] -> String -> Maybe (Int, Int)
-findPat p fs = findPat' [] p fs (0,0)
-  where
-  findPat' :: [Token] -> [Token] -> String -> (Int, Int) -> Maybe (Int, Int)
-  findPat' _ _ [] (start, end) = if start==end then Nothing else Just (start, end)
-  findPat' mp (UToken Union s:pt) (h:fs') (start, _) =
-    if [h]==s then
-      let (fs'',end') = eatPat s fs' in
-      findPat' (UToken Union s:mp) pt fs'' (start, start+end')
-    else
-      findPat' [] ((reverse mp)++(UToken Union s:pt)) fs' (start+1,start+1)
-  findPat' mp (UToken Kleene s:pt) (h:fs') (start, end) = 
-    if [h]==s then
-      let (fs'',end') = eatPat s fs' in
-      findPat' (UToken Kleene s:mp) pt fs'' (start, end+end')
-    else
-      case start==end of
-      True  -> findPat' (UToken Kleene s:mp) pt fs' (start, end+1) --prefix non-disruptive
-      False -> findPat' [] ((reverse mp)++(UToken Kleene s:pt)) fs' (start+1, start+1) -- disreuptive
-  findPat' mp (UToken Pattern s:pt) fs' (start, end) =
-    case matchPat s fs' of
-    Nothing -> findPat' [] ((reverse mp)++(UToken Pattern s:pt)) (tail fs') (start+1, start+1)
-    Just fs'' -> findPat' (UToken Pattern s:mp) pt fs'' (start, end+(length s))
-  findPat' _ _ _ _ = undefined -- no Or for now, v1 /= Binary Ops
-

@@ -52,35 +52,6 @@ interpTests = testGroup "interp Testing"
       "habc" @?= "123abc"
   ]
 
-_findPatTests :: TestTree
-_findPatTests = testGroup "findPat Testing"
-  [
-    testCase "findPat single Union, single match" $
-      findPat [UToken Union "b"] "b" @?= Just (0,1),
-    testCase "findPat single Union, no match" $
-      findPat [UToken Union "b"] "c" @?= Nothing,
-    testCase "findPat single Union, multiple match" $
-      findPat [UToken Union "b"] "bbbb" @?= Just (0,4),
-    testCase "findPat single Kleene, single match" $
-      findPat [UToken Kleene "b"] "b" @?= Just (0,1),
-    testCase "findPat single Kleene, multiple match" $
-      findPat [UToken Kleene "b"] "bbbb" @?= Just (0,4),
-    testCase "findPat single Kleene, no match" $
-      findPat [UToken Kleene "b"] "c" @?= Just (0,1),
-    testCase "findPat single Pattern, no match" $
-      findPat [UToken Pattern "sap"] "sa" @?= Nothing,
-    testCase "findPat single Pattern, single match" $
-      findPat [UToken Pattern "sap"] "sap" @?= Just (0,3),
-    testCase "findPat two Pattern, two match" $
-      findPat [UToken Pattern "hello", UToken Pattern " World"] "hello World" @?= Just (0,11),
-    testCase "findPat Pattern after Failure, single match" $
-      findPat [UToken Pattern "a"] "hello a" @?= Just (6,7),
-    testCase "findPat Union -> Pattern after Failure" $
-      findPat [UToken Union "a", UToken Pattern "hello"] "baaahello" @?= Just (1, 9),
-    testCase "findPat Kleene -> Pattern after Failure, actual match" $
-      findPat [UToken Kleene "a", UToken Pattern "hello"] "bahello" @?= Just (1, 7)
-  ]
-
 matchPreTests :: TestTree
 matchPreTests = testGroup "matchPre Testing"
   [

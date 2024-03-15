@@ -16,7 +16,7 @@ bigtest :: Parsec String [String] [[Token]] -> (String -> Either ParseError [[To
 bigtest p = runParser p [] ""
 
 parser :: TestTree
-parser = testGroup "Parser Tests" [v1, binOp]
+parser = testGroup "Parser Tests" [v1, binOp, v2]
 
 binOp :: TestTree
 binOp = testGroup "binary testing"
@@ -75,3 +75,16 @@ v1 = testGroup "v1 Parser Tests"
         UToken Pattern "C"]]
     ]
 
+v2 :: TestTree
+v2 = testGroup "v2 Parser Tests"
+  [
+    testCase "forceParse test 1" $
+    forceParse "g[ABC][MDB]" @?= [[UToken Outg "g", UToken Pattern "ABC",
+      UToken Sep "", UToken Pattern "MDB"]],
+    testCase "forceParse test 2" $
+    forceParse "g[ABC][MDB]r[ABC][CBAMDB]" @?= [[UToken Outg "g", UToken Pattern "ABC",
+      UToken Sep "", UToken Pattern "MDB"],
+      [UToken Outr "r", UToken Pattern "ABC", UToken Sep "", UToken Pattern "CBAMDB"]],
+    testCase "forceParse test empty" $
+    forceParse "" @?= []
+  ]
