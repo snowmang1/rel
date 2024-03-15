@@ -33,9 +33,10 @@ binaryTests = testGroup "interp binop testing"
       interp [Replace [UToken Pattern "abc"] [BToken Or ("A", "B")]] "abc" @?= "A"
   ]
 
-interpTests :: TestTree
+interpTests :: TestTree -- Here is where new tests should probably go for data collection
 interpTests = testGroup "interp Testing"
   [
+    -- this works by utilizing the internal `interp` function which is described in the README
     testCase "interp run with blank IR" $
       interp [] "abc" @?= "abc",
     testCase "interp simple generate" $
